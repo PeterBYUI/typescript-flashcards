@@ -5,7 +5,7 @@ import { Navigate } from "react-router";
 import Root from "./pages/Root";
 import Flashcards from "./pages/Flashcards";
 import Exercise from "./pages/Exercise";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter([
   {
