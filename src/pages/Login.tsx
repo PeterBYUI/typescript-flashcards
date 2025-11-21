@@ -3,6 +3,7 @@ import { isEmailValid, isPasswordValid } from "../utils/validation";
 import { useMutation } from "@tanstack/react-query";
 import { login, resetPassword } from "../utils/http";
 import { useNavigate } from "react-router";
+import { useState } from "react";
 
 import Card from "../components/Card";
 import Input from "../components/Input";
@@ -12,6 +13,8 @@ import Error from "../components/Error";
 export default function Login() {
 
     const navigate = useNavigate();
+
+    const [isWarningDisplayed, setIsWarningDisplayed] = useState<boolean>(false);
 
     const { str: email, handleOnChange: handleEmailChange, handleOnBlur: handleEmailBlur, isDisabled: isEmailDisabled, isError: isEmailError } = useInput(isEmailValid);
     const { str: password, handleOnChange: handlePasswordChange, handleOnBlur: handlePasswordBlur, isDisabled: isPasswordDisabled, isError: isPasswordError } = useInput(isPasswordValid);
@@ -29,6 +32,9 @@ export default function Login() {
 
     const { mutate: resetUserPassword, isPending: isResetPending, isError: isResetError } = useMutation({
         mutationFn: resetPassword,
+        onSuccess: () => {
+            setIsWarningDisplayed(true);
+        }
     });
 
     function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -51,6 +57,10 @@ export default function Login() {
             </form>
             {errors.length > 0 && <Error errors={errors} />}
             {isError && <Error errors={["Please check your crendentials and try again."]} />}
+            {isWarningDisplayed && <figure className="bg-[rgba(232,254,249,1)] mt-4 text-[#222] text-sm rounded-md p-4 text-center flex flex-col items-center gap-2">
+                <p>An email was sent to {email}.</p>
+                <Button styling="bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] text-[#fff] w-1/3" onClick={() => setIsWarningDisplayed(false)}>OK</Button>
+            </figure>}
         </Card>
     </section>
 }
