@@ -59,6 +59,10 @@ export default function Login() {
             {errors.length > 0 && <Error errors={errors} />}
             {isError || isResetError && <Error errors={["Please check your crendentials and try again."]} />}
             {isWarningDisplayed && <Info message={`An email was sent to ${email}.`} closeMessage={() => setIsWarningDisplayed(false)} />}
+            <hr className="border-[.1px] border-slate-100 my-4" />
+            <div className="flex justify-center">
+                <Button onClick={() => navigate("/signup")} styling="text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)] font-semibold">Sign up</Button>
+            </div>
         </Card>
     </section>
 }

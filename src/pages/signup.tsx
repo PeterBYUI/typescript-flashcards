@@ -61,6 +61,10 @@ export default function Signup() {
             </form>
             {errors.length > 0 && <Error errors={errors} />}
             {isError && <Error errors={["Check your credentials and try again."]} />}
+            <hr className="border-[.1px] border-slate-100 my-4" />
+            <div className="flex justify-center">
+                <Button onClick={() => navigate("/login")} styling="text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)] font-semibold">Log in</Button>
+            </div>
         </Card>
     </section>
 }
