@@ -9,6 +9,7 @@ import Card from "../components/Card";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Error from "../components/Error";
+import Info from "../components/Info";
 
 export default function Login() {
 
@@ -21,7 +22,7 @@ export default function Login() {
 
     let errors: string[] = [];
     if (isEmailError) errors.push("Please enter a valid email.");
-    if (isPasswordError) errors.push("Your password must be 6 characters long and contain 1 digit.");
+    if (isPasswordError) errors.push("Your password must be at least 6 characters long and contain at least 1 digit.");
 
     const { mutate: logUserIn, isPending, isError } = useMutation({
         mutationFn: login,
@@ -56,11 +57,8 @@ export default function Login() {
                 <Button type="button" onClick={handleResetPassword} styling="text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)] cursor-pointer disabled:cursor-not-allowed disabled:text-[rgb(191,233,223)] disabled:hover:text-[rgb(191,233,223)]" disabled={isPending || isResetPending || isEmailDisabled}>I forgot my password</Button>
             </form>
             {errors.length > 0 && <Error errors={errors} />}
-            {isError && <Error errors={["Please check your crendentials and try again."]} />}
-            {isWarningDisplayed && <figure className="bg-[rgba(232,254,249,1)] mt-4 text-[#222] text-sm rounded-md p-4 text-center flex flex-col items-center gap-2">
-                <p>An email was sent to {email}.</p>
-                <Button styling="bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] text-[#fff] w-1/3" onClick={() => setIsWarningDisplayed(false)}>OK</Button>
-            </figure>}
+            {isError || isResetError && <Error errors={["Please check your crendentials and try again."]} />}
+            {isWarningDisplayed && <Info message={`An email was sent to ${email}.`} closeMessage={() => setIsWarningDisplayed(false)} />}
         </Card>
     </section>
 }

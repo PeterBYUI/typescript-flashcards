@@ -33,3 +33,14 @@ export function isPasswordValid(str: string) {
     if (password.includes(" ")) return false;
     return true;
 }
+
+export function isNameValid(str: string) {
+    if (!str || typeof str !== "string") return false;
+
+    const name = str.trim();
+    if (!name) return false;
+    if (name.includes(" ")) return false;
+    if (name.length < 2) return false;
+    if (/\d/.test(name)) return false;
+    return true;
+}

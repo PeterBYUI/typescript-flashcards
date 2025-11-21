@@ -6,6 +6,7 @@ import Root from "./pages/Root";
 import Flashcards from "./pages/Flashcards";
 import Exercise from "./pages/Exercise";
 import Login from "./pages/Login";
+import Signup from "./pages/signup";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />
+  },
+  {
+    path: "/signup",
+    element: <Signup />
   },
   {
     path: "/content",
