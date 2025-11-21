@@ -1,7 +1,7 @@
 import useInput from "../hooks/useInput";
 import { isEmailValid, isPasswordValid } from "../utils/validation";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../utils/http";
+import { login, resetPassword } from "../utils/http";
 import { useNavigate } from "react-router";
 
 import Card from "../components/Card";
@@ -20,16 +20,24 @@ export default function Login() {
     if (isEmailError) errors.push("Please enter a valid email.");
     if (isPasswordError) errors.push("Your password must be 6 characters long and contain 1 digit.");
 
-    const { mutate, isPending, isError } = useMutation({
+    const { mutate: logUserIn, isPending, isError } = useMutation({
         mutationFn: login,
         onSuccess: () => {
             navigate("/content/flashcards");
         }
     });
 
+    const { mutate: resetUserPassword, isPending: isResetPending, isError: isResetError } = useMutation({
+        mutationFn: resetPassword,
+    });
+
     function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        mutate({ email, password });
+        logUserIn({ email, password });
+    }
+
+    function handleResetPassword() {
+        resetUserPassword({ email });
     }
 
     return <section className="p-16">
@@ -38,7 +46,8 @@ export default function Login() {
             <form onSubmit={handleOnSubmit} className="flex flex-col gap-4 items-center">
                 <Input styling="w-2/3" type="email" value={email} onChange={handleEmailChange} onBlur={handleEmailBlur} isError={isEmailError} placeholder="Enter your email" />
                 <Input styling="w-2/3" type="password" value={password} onChange={handlePasswordChange} onBlur={handlePasswordBlur} isError={isPasswordError} placeholder="Enter your password" />
-                <Button styling="bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] disabled:bg-[rgb(115,174,161)] disabled:hover:bg-[rgb(115,174,161)] disabled:cursor-not-allowed w-2/3" disabled={isEmailDisabled || isPasswordDisabled || isPending}>{!isPending ? "Log in" : "Loading..."}</Button>
+                <Button styling="text-[#fff] bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] disabled:bg-[rgb(191,233,223)] disabled:hover:bg-[rgb(191,233,223)] disabled:cursor-not-allowed w-2/3" disabled={isEmailDisabled || isPasswordDisabled || isPending || isResetPending}>{!isPending ? "Log in" : "Loading..."}</Button>
+                <Button type="button" onClick={handleResetPassword} styling="text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)] cursor-pointer disabled:cursor-not-allowed disabled:text-[rgb(191,233,223)] disabled:hover:text-[rgb(191,233,223)]" disabled={isPending || isResetPending || isEmailDisabled}>I forgot my password</Button>
             </form>
             {errors.length > 0 && <Error errors={errors} />}
             {isError && <Error errors={["Please check your crendentials and try again."]} />}
