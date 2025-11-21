@@ -1,9 +1,10 @@
 import { NavLink, } from "react-router";
+import type { HeaderProps } from "./Header";
 
 import Button from "./Button";
 import ProfileButton from "./ProfileButton";
 
-export default function DesktopHeader({ handleToggleSidebar, handleLoggingUserOut, isPending }: { handleToggleSidebar: () => void, handleLoggingUserOut: () => void, isPending: boolean }) {
+export default function DesktopHeader({ handleToggleSidebar, handleLoggingUserOut, isPending }: HeaderProps) {
 
     let styling = "hover:text-emerald-900 text-lg transition-all duration-200  ";
     let activeStyling = "font-semibold";

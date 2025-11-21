@@ -6,6 +6,12 @@ import { logout } from "../utils/http";
 import DesktopHeader from "./DesktopHeader";
 import Sidebar from "./Sidebar";
 
+export type HeaderProps = {
+    handleToggleSidebar: () => void;
+    handleLoggingUserOut: () => void;
+    isPending: boolean;
+}
+
 export default function Header() {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);

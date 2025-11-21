@@ -1,10 +1,15 @@
 import { UserContext } from "../store/UserContext";
 import { useContext } from "react";
+import type { HeaderProps } from "./Header";
 
 import Button from "./Button";
 import ProfileButton from "./ProfileButton";
 
-export default function Sidebar({ isOpen, handleToggleSidebar, handleLoggingUserOut, isPending }: { isOpen: boolean, handleToggleSidebar: () => void, handleLoggingUserOut: () => void, isPending: boolean }) {
+type SidebarProps = HeaderProps & {
+    isOpen: boolean;
+}
+
+export default function Sidebar({ isOpen, handleToggleSidebar, handleLoggingUserOut, isPending }: SidebarProps) {
 
     let styling = "absolute block md:hidden h-[100vh] w-1/1 bg-[rgba(191,233,223,.9)] top-0 right-0 transition-all duration-200 ";
     if (isOpen) {
