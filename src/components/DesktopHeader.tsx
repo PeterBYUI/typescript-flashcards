@@ -1,11 +1,13 @@
-import { NavLink } from "react-router";
+import { NavLink, } from "react-router";
 
 import Button from "./Button";
+import ProfileButton from "./ProfileButton";
 
-export default function DesktopHeader({ handleToggleSidebar }: { handleToggleSidebar: () => void }) {
+export default function DesktopHeader({ handleToggleSidebar, handleLoggingUserOut, isPending }: { handleToggleSidebar: () => void, handleLoggingUserOut: () => void, isPending: boolean }) {
 
     let styling = "hover:text-emerald-900 text-lg transition-all duration-200  ";
     let activeStyling = "font-semibold";
+
 
     return <div className="h-16 bg-[rgba(250,250,250,0.3)] flex items-center justify-around text-emerald-700">
 
@@ -13,8 +15,9 @@ export default function DesktopHeader({ handleToggleSidebar }: { handleToggleSid
             <li><NavLink to={"flashcards"} className={(({ isActive }) => isActive ? `${styling}${activeStyling}` : styling)}>Flashcards</NavLink></li>
             <li><NavLink to={"exercise"} className={(({ isActive }) => isActive ? `${styling}${activeStyling}` : styling)}>Exercise</NavLink></li>
         </ul>
-        <div className="hidden md:block">
-            <Button styling="hover:text-emerald-800 hover:font-semibold group">
+        <div className="hidden md:flex md:items-center md:gap-4">
+            <ProfileButton size={10} />
+            <Button onClick={handleLoggingUserOut} styling="hover:text-emerald-900 group disabled:text-emerald-300" disabled={isPending}>
                 <div className="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="size-6 stroke-[1.5] group-hover:stroke-[2.2]">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
