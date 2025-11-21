@@ -10,6 +10,8 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Error from "../components/Error";
 import Info from "../components/Info";
+import Footer from "../components/Footer";
+import Title from "../components/Title";
 
 export default function Login() {
 
@@ -49,7 +51,7 @@ export default function Login() {
 
     return <section className="p-16">
         <Card styling="p-5 sm:w-3/3 md:w-2/3 lg:w-1/3 xl:w-1/3">
-            <h2 className="text-center text-xl text-[rgba(100,190,171)] font-semibold mb-8">Log in</h2>
+            <Title title="Log in" />
             <form onSubmit={handleOnSubmit} className="flex flex-col gap-4 items-center">
                 <Input styling="w-2/3" type="email" value={email} onChange={handleEmailChange} onBlur={handleEmailBlur} isError={isEmailError} placeholder="Enter your email" />
                 <Input styling="w-2/3" type="password" value={password} onChange={handlePasswordChange} onBlur={handlePasswordBlur} isError={isPasswordError} placeholder="Enter your password" />
@@ -59,10 +61,7 @@ export default function Login() {
             {errors.length > 0 && <Error errors={errors} />}
             {isError || isResetError && <Error errors={["Please check your crendentials and try again."]} />}
             {isWarningDisplayed && <Info message={`An email was sent to ${email}.`} closeMessage={() => setIsWarningDisplayed(false)} />}
-            <hr className="border-[.1px] border-slate-100 my-4" />
-            <div className="flex justify-center">
-                <Button onClick={() => navigate("/signup")} styling="text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)] font-semibold">Sign up</Button>
-            </div>
+            <Footer path="/signup" title="Sign up" />
         </Card>
     </section>
 }

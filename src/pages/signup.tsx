@@ -4,12 +4,14 @@ import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { isEmailValid, isPasswordValid, isNameValid } from "../utils/validation";
 import { signup } from "../utils/http";
+import { UserContext } from "../store/UserContext";
 
 import Card from "../components/Card";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Error from "../components/Error";
-import { UserContext } from "../store/UserContext";
+import Footer from "../components/Footer";
+import Title from "../components/Title";
 
 export default function Signup() {
 
@@ -50,21 +52,18 @@ export default function Signup() {
 
     return <section className="p-16">
         <Card styling="p-5 sm:w-3/3 md:w-2/3 lg:w-1/3 xl:w-1/3">
-            <h2 className="text-center text-xl text-[rgba(100,190,171)] font-semibold mb-8">Sign up</h2>
+            <Title title="Sign up" />
             <form onSubmit={handleSubmitSignup} className="flex flex-col gap-4 items-center">
                 <Input styling="w-2/3" type="text" value={firstName} onChange={handleFirstNameChange} onBlur={handleFirstNameBlur} isError={isFirstNameError} placeholder="First Name" />
                 <Input styling="w-2/3" type="text" value={lastName} onChange={handleLastNameChange} onBlur={handleLastNameBlur} isError={isLastNameError} placeholder="Last name" />
                 <Input styling="w-2/3" type="email" value={email} onChange={handleEmailChange} onBlur={handleEmailBlur} isError={isEmailError} placeholder="Enter your email" />
                 <Input styling="w-2/3" type="password" value={password} onChange={handlePasswordChange} onBlur={handlePasswordBlur} isError={isPasswordError} placeholder="Password" />
                 <Input styling="w-2/3" type="password" value={confirm} onChange={handleConfirmChange} onBlur={handleConfirmBlur} isError={isConfirmError} placeholder="Confirm your password" />
-                <Button styling="text-[#fff] bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] disabled:bg-[rgb(191,233,223)] disabled:hover:bg-[rgb(191,233,223)] disabled:cursor-not-allowed w-2/3" disabled={isEmailDisabled || isPasswordDisabled || isConfirmDisabled || isFirstNameDisabled || isLastNameDisabled || confirm !== password || isPending}>{!isPending ? "Log in" : "Loading..."}</Button>
+                <Button styling="text-[#fff] bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] disabled:bg-[rgb(191,233,223)] disabled:hover:bg-[rgb(191,233,223)] disabled:cursor-not-allowed w-2/3" disabled={isEmailDisabled || isPasswordDisabled || isConfirmDisabled || isFirstNameDisabled || isLastNameDisabled || confirm !== password || isPending}>{!isPending ? "Sign up" : "Loading..."}</Button>
             </form>
             {errors.length > 0 && <Error errors={errors} />}
             {isError && <Error errors={["Check your credentials and try again."]} />}
-            <hr className="border-[.1px] border-slate-100 my-4" />
-            <div className="flex justify-center">
-                <Button onClick={() => navigate("/login")} styling="text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)] font-semibold">Log in</Button>
-            </div>
+            <Footer path="/login" title="Log in" />
         </Card>
     </section>
 }
