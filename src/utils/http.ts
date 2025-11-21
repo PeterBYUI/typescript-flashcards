@@ -6,6 +6,6 @@ import { auth } from "../firebase/config";
 export const queryClient = new QueryClient();
 
 
-const login = async ({ email, password }: { email: string, password: string }) => {
+export const login = async ({ email, password }: { email: string, password: string }) => {
     await signInWithEmailAndPassword(auth, email, password);
 }

@@ -9,8 +9,8 @@ export default function Header() {
     return <header className="h-16 bg-[rgba(250,250,250,0.3)] flex items-center justify-around text-[#555]">
         <h1 className="text-2xl">Flashcards</h1>
         <ul className="flex gap-16">
-            <li><NavLink to={"/flashcards"} className={(({ isActive }) => isActive ? `${styling}${activeStyling}` : `${styling}${inactiveStyling}`)}>Flashcards</NavLink></li>
-            <li><NavLink to={"/exercise"} className={(({ isActive }) => isActive ? `${styling}${activeStyling}` : `${styling}${inactiveStyling}`)}>Exercise</NavLink></li>
+            <li><NavLink to={"flashcards"} className={(({ isActive }) => isActive ? `${styling}${activeStyling}` : `${styling}${inactiveStyling}`)}>Flashcards</NavLink></li>
+            <li><NavLink to={"exercise"} className={(({ isActive }) => isActive ? `${styling}${activeStyling}` : `${styling}${inactiveStyling}`)}>Exercise</NavLink></li>
         </ul>
     </header>
 }

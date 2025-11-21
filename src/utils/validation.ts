@@ -22,3 +22,14 @@ export function isEmailValid(str: string) {
 
     return true;
 }
+
+
+export function isPasswordValid(str: string) {
+    if (!str || typeof str !== "string") return false;
+
+    const password = str.trim();
+    if (password.length < 6) return false;
+    if (!/\d/.test(password)) return false;
+    if (password.includes(" ")) return false;
+    return true;
+}
