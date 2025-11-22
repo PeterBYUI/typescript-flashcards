@@ -11,12 +11,12 @@ import { onAuthStateChanged } from "firebase/auth";
 
 interface UserContextValue {
     user: UserModel | null | undefined;
-    handleSetUser: (userId: string, email: string, displayName: string) => void;
+    handleSetUser: (id: string, email: string, displayName: string) => void;
 }
 
 export const UserContext = createContext<UserContextValue>({
     user: {
-        userId: "",
+        id: "",
         email: "",
         displayName: ""
     },
@@ -31,9 +31,9 @@ export default function UserContextProvider({ children }: UserContextProviderPro
 
     const [user, setUser] = useState<UserModel | null | undefined>(undefined);
 
-    function handleSetUser(userId: string, email: string, displayName: string) {
+    function handleSetUser(id: string, email: string, displayName: string) {
         setUser({
-            userId,
+            id,
             email,
             displayName
         })
@@ -50,7 +50,7 @@ export default function UserContextProvider({ children }: UserContextProviderPro
                 let displayName = "";
                 if (user.displayName) displayName = user.displayName;
                 setUser({
-                    userId: user.uid,
+                    id: user.uid,
                     email: user.email || "",
                     displayName
                 })
