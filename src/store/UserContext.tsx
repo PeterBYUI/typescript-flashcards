@@ -10,7 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 // }
 
 interface UserContextValue {
-    user: UserModel | null;
+    user: UserModel | null | undefined;
     handleSetUser: (userId: string, email: string, displayName: string) => void;
 }
 
@@ -29,11 +29,7 @@ interface UserContextProviderProps {
 
 export default function UserContextProvider({ children }: UserContextProviderProps) {
 
-    const [user, setUser] = useState<UserModel | null>({
-        userId: "",
-        email: "",
-        displayName: ""
-    });
+    const [user, setUser] = useState<UserModel | null | undefined>(undefined);
 
     function handleSetUser(userId: string, email: string, displayName: string) {
         setUser({

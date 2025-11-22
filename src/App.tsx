@@ -6,7 +6,8 @@ import Root from "./pages/Root";
 import Flashcards from "./pages/Flashcards";
 import Exercise from "./pages/Exercise";
 import Login from "./pages/Login";
-import Signup from "./pages/signup";
+import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -27,11 +28,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "flashcards",
-        element: <Flashcards />
+        element: <ProtectedRoute><Flashcards /></ProtectedRoute>
       },
       {
         path: "exercise",
-        element: <Exercise />
+        element: <ProtectedRoute><Exercise /></ProtectedRoute>
       }
     ]
   }

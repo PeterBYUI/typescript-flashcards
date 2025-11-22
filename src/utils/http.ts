@@ -26,7 +26,7 @@ export const signup = async ({ firstName, lastName, email, password }: { firstNa
 }
 
 export const login = async ({ email, password }: { email: string, password: string }) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const res = await signInWithEmailAndPassword(auth, email, password);
 }
 
 export const resetPassword = async ({ email }: { email: string }) => {

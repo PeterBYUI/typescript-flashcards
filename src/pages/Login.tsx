@@ -30,7 +30,10 @@ export default function Login() {
         mutationFn: login,
         onSuccess: () => {
             navigate("/content/flashcards");
-        }
+        },
+        // onError: (err: FirebaseError) => {
+        //     console.error(err.code);
+        // }
     });
 
     const { mutate: resetUserPassword, isPending: isResetPending, isError: isResetError } = useMutation({
@@ -59,7 +62,7 @@ export default function Login() {
                 <Button type="button" onClick={handleResetPassword} styling="text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)] cursor-pointer disabled:cursor-not-allowed disabled:text-[rgb(191,233,223)] disabled:hover:text-[rgb(191,233,223)]" disabled={isPending || isResetPending || isEmailDisabled}>I forgot my password</Button>
             </form>
             {errors.length > 0 && <Error errors={errors} />}
-            {isError || isResetError && <Error errors={["Please check your crendentials and try again."]} />}
+            {(isError || isResetError) && <Error errors={["Please check your crendentials and try again."]} />}
             {isWarningDisplayed && <Info message={`An email was sent to ${email}.`} closeMessage={() => setIsWarningDisplayed(false)} />}
             <Footer path="/signup" title="Sign up" />
         </Card>
