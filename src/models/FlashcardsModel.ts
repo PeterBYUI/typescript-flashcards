@@ -1,4 +1,4 @@
-export type FlashcardsModel = {
+export type FlashcardModel = {
     id: string,
     userId: string;
     question: string;

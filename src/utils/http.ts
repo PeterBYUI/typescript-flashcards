@@ -4,7 +4,7 @@ import { auth } from "../firebase/config";
 import { db } from "../firebase/config";
 import { QueryClient } from "@tanstack/react-query";
 
-import type { FlashcardsModel } from "../models/FlashcardsModel";
+import type { FlashcardModel } from "../models/FlashcardsModel";
 
 const usersRef = collection(db, "users");
 const flashcardsRef = collection(db, "flashcards");
@@ -48,11 +48,11 @@ export const logout = async () => {
 export const fetchFlashcard = async ({ userId }: { userId: string }) => {
     const flashcardsQuery = query(flashcardsRef, where("userId", "==", userId));
     const snapshot = await getDocs(flashcardsQuery);
-    const flashcards: FlashcardsModel[] = snapshot.docs.map((flashcard) => {
+    const flashcards: FlashcardModel[] = snapshot.docs.map((flashcard) => {
         return {
             id: flashcard.id,
             ...flashcard.data(),
-        } as FlashcardsModel;
+        } as FlashcardModel;
     });
     return flashcards;
 }
