@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { UserContext } from "../store/UserContext";
 import { fetchFlashcard } from "../utils/http";
 
