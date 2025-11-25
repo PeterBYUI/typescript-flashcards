@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
+html {
+  overflow-x: hidden;
+}
+
 body {
+  overflow: hidden;
   font-family: 'Rubik', sans-serif;
   min-height: 100vh;
   background-image: linear-gradient(to bottom, rgb(127, 227, 206), rgba(87, 127, 223));

@@ -58,11 +58,11 @@ export const fetchFlashcard = async ({ userId }: { userId: string }) => {
     return flashcards;
 }
 
-// export const updateFlashcard = async ({ flashcardId, updates }: { flashcardId: string, updates: Partial<FlashcardModel> }) => {
-//     const flashcardRef = doc(db, "flashcards", flashcardId);
-//     // merge: true ensures update works even if doc is missing
-//     await setDoc(flashcardRef, updates, { merge: true });
-// }
+export const updateFlashcard = async ({ flashcardId, updates }: { flashcardId: string, updates: Partial<FlashcardModel> }) => {
+    const flashcardRef = doc(db, "flashcards", flashcardId);
+    // merge: true ensures update works even if doc is missing
+    await updateDoc(flashcardRef, updates);
+}
 
 export const addFlashcard = async ({ userId, question, answer }: { userId: string, question: string, answer: string }) => {
     if (!userId || !question || !answer) return;

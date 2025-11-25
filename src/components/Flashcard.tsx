@@ -1,12 +1,17 @@
 import type { FlashcardModel } from "../models/FlashcardsModel";
 import { useState, useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { queryClient, addFlashcard, deleteFlashcard } from "../utils/http";
+import { queryClient, addFlashcard, deleteFlashcard, updateFlashcard } from "../utils/http";
 import { UserContext } from "../store/UserContext";
 
 import Input from "./Input";
 import Button from "./Button";
-import Spinner from "./spinner/Spinner";
+import Text from "./Text";
+
+import ConfirmSvg from "./svgs/Confirm";
+import EditSvg from "./svgs/Edit";
+import DeleteSvg from "./svgs/Delete";
+import CancelSvg from "./svgs/Cancel";
 
 type FlashcardComponentProps = {
     flashcard?: FlashcardModel;
@@ -16,7 +21,10 @@ type FlashcardComponentProps = {
 
 export default function Flashcard({ flashcard, isNew, handleCloseAddition }: FlashcardComponentProps) {
 
-    const [card, setCard] = useState<Partial<FlashcardModel> | undefined>(flashcard);
+    const [card, setCard] = useState<Partial<FlashcardModel>>(flashcard ? flashcard : {
+        question: "",
+        answer: "",
+    });
 
     const { user } = useContext(UserContext);
 
@@ -47,7 +55,6 @@ export default function Flashcard({ flashcard, isNew, handleCloseAddition }: Fla
 
     function handleTextChange(e: React.ChangeEvent<HTMLInputElement>, isQuestion: boolean) {
         setCard((prevCard) => {
-            if (!prevCard) return undefined;
             if (isQuestion) {
                 return {
                     ...prevCard,
@@ -64,30 +71,58 @@ export default function Flashcard({ flashcard, isNew, handleCloseAddition }: Fla
 
     const [isEditing, setIsEditing] = useState<boolean>(isNew);
 
-    return <div className="grid grid-cols-[2fr_2fr_1fr] gap-4">
+    //Optimistic flashcard updating
+    const { mutate: optimisticUpdate } = useMutation({
+        mutationFn: updateFlashcard,
+        onMutate: async (data) => {
+            await queryClient.cancelQueries({ queryKey: flashcardsKey });
+            const flashcards = queryClient.getQueryData(flashcardsKey) as FlashcardModel[];
+            const updatedFlashcards = flashcards.map((f) => {
+                if (f.id === data.flashcardId) {
+                    return {
+                        ...f,
+                        ...data.updates //{question: "question", answer: "answer"}
+                    }
+                } else {
+                    return f;
+                }
+            });
+            queryClient.setQueryData(flashcardsKey, updatedFlashcards);
+            return { flashcards };
+        },
+        onError: (error, data, context) => {
+            queryClient.setQueryData(flashcardsKey, context?.flashcards);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: flashcardsKey });
+        }
+    });
+
+    return <div className="grid rounded-md p-2 shadow-[0_5px_10px_rgba(0,0,0,.3)] md:shadow-none grid-cols-1 text-center justify-items-center md:text-start md:grid-cols-[2fr_2fr_1fr] gap-4 items-start">
         <div className="flex flex-col">
-            <label className="text-[rgba(100,190,171)] font-semibold">Question</label>
-            {!isEditing && <p className="px-2">{card?.question}</p>}
+            <label className="text-[rgba(100,190,171)] font-semibold text-sm md:text-md lg:text-base">Question</label>
+            {!isEditing && card?.question && <Text str={card?.question} />}
             {isEditing && <Input styling="w-1/1" value={card?.question || ""} onChange={(e) => handleTextChange(e, true)} />
             }
         </div>
         <div className="flex flex-col">
-            <label className="text-[rgba(100,190,171)] font-semibold">Answer</label>
-            {!isEditing && <p className="px-2">{card?.answer}</p>}
+            <label className="text-[rgba(100,190,171)] font-semibold text-sm md:text-md lg:text-base">Answer</label>
+            {!isEditing && card?.answer && <Text str={card?.answer} />}
             {isEditing && <Input styling="w-1/1" value={card?.answer || ""} onChange={(e) => handleTextChange(e, false)} />
             }
         </div>
-        {!isNew && <div className="flex gap-2">
+        {!isNew && <div className="flex gap-2 row-span-2">
             <Button onClick={() => {
                 if (!isEditing) {
                     setIsEditing(true)
+                } else { //isEditing
+                    if (flashcard?.id) {
+                        optimisticUpdate({ flashcardId: flashcard?.id, updates: card });
+                        setIsEditing(false)
+                    }
                 }
             }} styling={`translate-y-[20%] text-[rgba(100,190,171)] hover:text-[rgb(79,151,136)]`}>
-                {isEditing ? <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                </svg> : <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
-                    <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
-                </svg>}
+                {isEditing ? <ConfirmSvg /> : <EditSvg />}
             </Button>
             <Button onClick={() => {
                 if (!isEditing) {
@@ -98,11 +133,7 @@ export default function Flashcard({ flashcard, isNew, handleCloseAddition }: Fla
                     }
                 }
             }} styling="translate-y-[20%] text-red-400 hover:text-red-500">
-                {isEditing ? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
-                    <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                </svg> : <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                </svg>}
+                {isEditing ? <CancelSvg /> : <DeleteSvg />}
             </Button>
         </div>}
         {isNew && <div className="flex gap-2">
