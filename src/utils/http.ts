@@ -1,5 +1,5 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, signOut } from "firebase/auth";
-import { addDoc, collection, getDocs, query, where, updateDoc, doc, setDoc, serverTimestamp, orderBy, deleteDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, signOut, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import { addDoc, collection, getDocs, query, where, updateDoc, doc, serverTimestamp, orderBy, deleteDoc, writeBatch } from "firebase/firestore";
 import { auth } from "../firebase/config";
 import { db } from "../firebase/config";
 import { QueryClient } from "@tanstack/react-query";
@@ -74,4 +74,25 @@ export const deleteFlashcard = async ({ flashcardId }: { flashcardId: string }) 
     if (!flashcardId) return;
     const flashcardRef = doc(db, "flashcards", flashcardId);
     await deleteDoc(flashcardRef);
+}
+
+//Account deletion 
+
+export const deleteUserAccount = async ({ email, password }: { email: string, password: string }) => {
+    const credential = EmailAuthProvider.credential(email, password);
+    const user = auth.currentUser;
+    if (!user) return;
+    await reauthenticateWithCredential(user, credential);
+
+    const flashcardsQuery = query(flashcardsRef, where("userId", "==", user.uid));
+    const snapshots = await getDocs(flashcardsQuery);
+    const batch = writeBatch(db);
+
+    for (let flashDoc of snapshots.docs) {
+        batch.delete(flashDoc.ref);
+    }
+
+    await batch.commit();
+
+    await deleteUser(user);
 }

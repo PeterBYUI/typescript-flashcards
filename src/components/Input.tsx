@@ -1,9 +1,11 @@
+import { forwardRef } from "react";
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     styling?: string;
     isError?: boolean;
 }
 
-export default function Input({ styling, isError, ...props }: InputProps) {
+const Input = forwardRef<HTMLInputElement, InputProps>(({ styling, isError, ...props }, ref) => {
     let style = `bg-[#eee] rounded-md mx-auto block px-2 py-1 ${styling || ""} `
 
     if (isError) {
@@ -14,5 +16,7 @@ export default function Input({ styling, isError, ...props }: InputProps) {
 
 
 
-    return <input {...props} className={style} />
-}
+    return <input ref={ref} {...props} className={style} />
+});
+
+export default Input;

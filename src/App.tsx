@@ -8,6 +8,7 @@ import Exercise from "./pages/Exercise";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "exercise",
         element: <ProtectedRoute><Exercise /></ProtectedRoute>
+      },
+      {
+        path: "profile",
+        element: <ProtectedRoute><Profile /></ProtectedRoute>
       }
     ]
   }
