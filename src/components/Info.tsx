@@ -2,7 +2,7 @@ import Button from "./Button"
 
 type InfoProps = {
     message: string;
-    closeMessage: () => void;
+    closeMessage?: () => void;
 }
 
 export default function Info({ message, closeMessage }: InfoProps) {
@@ -11,6 +11,6 @@ export default function Info({ message, closeMessage }: InfoProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
         </svg>
         <p>{message}</p>
-        <Button styling="bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] text-[#fff] w-1/3" onClick={closeMessage}>OK</Button>
+        {closeMessage && <Button styling="bg-[rgba(100,190,171)] hover:bg-[rgb(79,151,136)] text-[#fff] w-1/3" onClick={closeMessage}>OK</Button>}
     </figure>
 }
