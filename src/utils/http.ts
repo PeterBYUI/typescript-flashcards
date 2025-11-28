@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, signOut, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
-import { addDoc, collection, getDocs, query, where, updateDoc, doc, serverTimestamp, orderBy, deleteDoc, writeBatch, getDoc } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where, updateDoc, doc, serverTimestamp, orderBy, deleteDoc, writeBatch } from "firebase/firestore";
 import { auth } from "../firebase/config";
 import { db } from "../firebase/config";
 import { QueryClient } from "@tanstack/react-query";
