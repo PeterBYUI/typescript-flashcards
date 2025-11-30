@@ -131,6 +131,8 @@ export default function Flashcard({ flashcard, isNew, handleCloseAddition }: Fla
                         console.log("Id detected")
                         deleteTarget({ flashcardId: flashcard.id })
                     }
+                } else {
+                    setIsEditing(false);
                 }
             }} styling="translate-y-[20%] text-red-400 hover:text-red-500">
                 {isEditing ? <CancelSvg /> : <DeleteSvg />}

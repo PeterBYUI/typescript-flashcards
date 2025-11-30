@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../store/UserContext";
 import { fetchFlashcard } from "../utils/http";
 import type { GameModel } from "../models/GameModel";
@@ -28,7 +28,8 @@ export default function Exercise() {
     const [game, setGame] = useState<GameModel>({
         questionIndex: 0,
         score: 0,
-        answerIsRevealed: false
+        answerIsRevealed: false,
+        gameIsOver: false,
     });
 
     function handleFlipCard() {
@@ -40,9 +41,22 @@ export default function Exercise() {
             return {
                 questionIndex: previousState.questionIndex < maxIndex - 1 ? previousState.questionIndex + 1 : previousState.questionIndex,
                 score: answerWasCorrect ? previousState.score + 1 : previousState.score,
-                answerIsRevealed: false
+                answerIsRevealed: false,
+                gameIsOver: previousState.questionIndex == maxIndex - 1 ? true : false
             }
-        })
+        });
+    }
+
+    function resetGame() {
+        setGame((previousState) => {
+            return {
+                questionIndex: 0,
+                score: 0,
+                answerIsRevealed: false,
+                gameIsOver: false
+            }
+        });
+        setGameHasStarted(false);
     }
 
     if (isPending) {
@@ -65,27 +79,33 @@ export default function Exercise() {
                 </div>
             </section>
         } else { //actual game
-
-            // setGame((previousState) => ({ ...previousState, totalQuestionNumber: fetchFlashcard.length }));
-
-            return <section className="text-center">
-                <h3 className="mt-16 mb-8 text-xl font-semibold text-teal-800">Flashcard nº{game.questionIndex + 1}</h3>
-                <div className="flex flex-col gap-8 w-2/3 md:w-1/2 mx-auto">
-                    <div className="w-1/1 flex flex-col gap-2 md:gap-0 md:flex-row items-center">
-                        <p className="md:w-1/4 text-gray-800 text-lg lg:text-xl font-semibold">Score: {game.score}</p>
-                        <ProgressBar currentIndex={game.questionIndex} total={flashcards.length} />
-                    </div>
-                    <FlipCard question={flashcards[game.questionIndex].question} answer={flashcards[game.questionIndex].answer} answerIsRevealed={game.answerIsRevealed} />
-                    {!game.answerIsRevealed ?
-                        <Button onClick={handleFlipCard} styling="w-1/3 mx-auto bg-teal-400 hover:bg-teal-500 text-[#eee]">Reveal answer</Button>
-                        :
-                        <div className="w-1/1 flex flex-col sm:flex-row justify-center items-center gap-4">
-                            <Button onClick={() => handleNextFlashcard(false, flashcards.length)} styling="bg-red-400 hover:bg-red-500">I didn't know that</Button>
-                            <Button onClick={() => handleNextFlashcard(true, flashcards.length)} styling="bg-teal-400 hover:bg-teal-500">I knew that</Button>
+            if (!game.gameIsOver) {
+                return <section className="text-center">
+                    <h3 className="mt-16 mb-8 text-xl font-semibold text-teal-800">Flashcard nº{game.questionIndex + 1}</h3>
+                    <div className="flex flex-col gap-8 w-2/3 md:w-1/2 mx-auto">
+                        <div className="w-1/1 flex flex-col gap-2 md:gap-0 md:flex-row items-center">
+                            <p className="md:w-1/4 text-gray-800 text-lg lg:text-xl font-semibold">Score: {game.score}</p>
+                            <ProgressBar currentIndex={game.questionIndex} total={flashcards.length} />
                         </div>
-                    }
-                </div>
-            </section>
+                        <FlipCard question={flashcards[game.questionIndex].question} answer={flashcards[game.questionIndex].answer} answerIsRevealed={game.answerIsRevealed} />
+                        {!game.answerIsRevealed ?
+                            <Button onClick={handleFlipCard} styling="w-1/3 mx-auto bg-teal-400 hover:bg-teal-500 text-[#eee]">Reveal answer</Button>
+                            :
+                            <div className="w-1/1 flex flex-col sm:flex-row justify-center items-center gap-4 text-[#eee]">
+                                <Button onClick={() => handleNextFlashcard(false, flashcards.length)} styling="bg-red-400 hover:bg-red-500">I didn't know that</Button>
+                                <Button onClick={() => handleNextFlashcard(true, flashcards.length)} styling="bg-teal-400 hover:bg-teal-500">I knew that</Button>
+                            </div>
+                        }
+                    </div>
+                </section>
+            } else { //game over
+                return <section className="text-center flex flex-col gap-8 items-center">
+                    <h3 className="mt-16 text-4xl font-semibold text-teal-800">Game over!</h3>
+                    <p className="text-emerald-700 text-xl font-semibold">Your score: {game.score}/{flashcards.length}</p>
+                    <Button styling="bg-teal-500 hover:bg-teal-600 text-[#eee] h-10 w-1/2 md:w-1/5 lg:w-1/6" onClick={resetGame}>Close game</Button>
+                </section>
+
+            }
         }
     }
 }
