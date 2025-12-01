@@ -4,6 +4,7 @@ import type { GameModel } from "../models/GameModel";
 interface GameContextValue {
     gameHasStarted: boolean;
     game: GameModel;
+    startGame: () => void;
     resetGame: () => void;
     handleFlipCard: () => void;
     handleNextFlashcard: (answerWasCorrect: boolean, maxIndex: number) => void;
@@ -17,6 +18,7 @@ export const GameContext = createContext<GameContextValue>({
         answerIsRevealed: false,
         gameIsOver: false,
     },
+    startGame: () => { },
     resetGame: () => { },
     handleFlipCard: () => { },
     handleNextFlashcard: () => { },
@@ -64,6 +66,7 @@ export default function GameContextProvider({ children }: { children: React.Reac
     const contextValue: GameContextValue = {
         gameHasStarted,
         game,
+        startGame: () => setGameHasStarted(true),
         resetGame,
         handleFlipCard,
         handleNextFlashcard

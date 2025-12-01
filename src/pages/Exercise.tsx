@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../store/UserContext";
+import { GameContext } from "../store/GameContext";
 import { fetchFlashcard } from "../utils/http";
-import type { GameModel } from "../models/GameModel";
 
 import Spinner from "../components/spinner/Spinner";
 import Button from "../components/Button";
@@ -23,41 +23,8 @@ export default function Exercise() {
         enabled: !!user?.id
     });
 
-    const [gameHasStarted, setGameHasStarted] = useState<boolean>(false);
+    const { gameHasStarted, game, startGame, resetGame, handleFlipCard, handleNextFlashcard } = useContext(GameContext);
 
-    const [game, setGame] = useState<GameModel>({
-        questionIndex: 0,
-        score: 0,
-        answerIsRevealed: false,
-        gameIsOver: false,
-    });
-
-    function handleFlipCard() {
-        setGame((previousState) => ({ ...previousState, answerIsRevealed: true }));
-    }
-
-    function handleNextFlashcard(answerWasCorrect: boolean, maxIndex: number) {
-        setGame((previousState) => {
-            return {
-                questionIndex: previousState.questionIndex < maxIndex - 1 ? previousState.questionIndex + 1 : previousState.questionIndex,
-                score: answerWasCorrect ? previousState.score + 1 : previousState.score,
-                answerIsRevealed: false,
-                gameIsOver: previousState.questionIndex == maxIndex - 1 ? true : false
-            }
-        });
-    }
-
-    function resetGame() {
-        setGame((previousState) => {
-            return {
-                questionIndex: 0,
-                score: 0,
-                answerIsRevealed: false,
-                gameIsOver: false
-            }
-        });
-        setGameHasStarted(false);
-    }
 
     if (isPending) {
         return <div className="mt-16"><Spinner /></div>
@@ -75,7 +42,7 @@ export default function Exercise() {
                 <h3 className="mt-16 mb-8 text-4xl font-semibold text-teal-800">Let's review your flashcards!</h3>
                 <div className="mt-16 flex flex-col gap-8 items-center">
                     <p className="text-xl">You currently have <strong>{flashcards.length}</strong> flashcards to study.</p>
-                    <Button onClick={() => setGameHasStarted(true)} styling="bg-teal-400 hover:bg-teal-500 text-[#eee] text-xl h-16 w-3/5 md:w-2/5 lg:w-1/5">Start learning</Button>
+                    <Button onClick={startGame} styling="bg-teal-400 hover:bg-teal-500 text-[#eee] text-xl h-16 w-3/5 md:w-2/5 lg:w-1/5">Start learning</Button>
                 </div>
             </section>
         } else { //actual game
